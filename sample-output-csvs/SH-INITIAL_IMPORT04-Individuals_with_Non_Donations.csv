@@ -1,0 +1,4 @@
+Supporter ID,Prefix,First Name(Required),Middle Name,Last Name,Suffix,Birthday,Gender,Home Phone,Mobile Phone,Work Phone,Email(Required),Transaction description,Transaction category,Transaction amount,Transaction date,Project,Payment method,Address Line 1,Address Line2,City,State,Postcode,Country(Required if phone present),Address Type(Required if address present),Acquisition Date,Flag Name,Flag Type,Flag Name,Flag Type
+,Mr,Joe,,Carty,,,Male,,,,abc@example.com,XXL Tshirt,merch_sale,123.45,2022-01-01,,Cash,,,Sydney,NSW,1231,Australia,Home,2021-01-01,Celebrity,ATTRIBUTES,SecondFlag,PREFERENCES
+,Mrs,Jane,,Smith,,,Female,,,,bcd@example.com,DVDs,merch_sale,20,2022-06-06,DVD Promo,Other/unknown,,,,,,,,2021-02-01,Celebrity,ATTRIBUTES,SecondFlag,PREFERENCES
+,,Barty,,Pierce,,,,,,,cdf@example.com,Hoodie,merch_sale,50,2022-03-12,,Credit card,,,,,,,,2021-06-01,Celebrity,ATTRIBUTES,SecondFlag,PREFERENCES

@@ -1,0 +1,4 @@
+﻿Supporter ID,Prefix,First Name(Required),Middle Name,Last Name,Suffix,Birthday,Gender,Home Phone,Mobile Phone,Work Phone,Email(Required),Address Line 1,Address Line2,City,State,Postcode,Country(Required if phone present),Address Type(Required if address present),Acquisition Date,Flag Name,Flag Type,Flag Name,Flag Type,Project(Required),Donation Type,Donation Amount(Required),Donation Date(Required),Personal Email
+,Mr,Barty,,A,,,Male,,,,abc@gmail.com,Carty,,Sydney,NSW,1231,Australia,Home,20/12/21,Celebrity,Something else,SecondFlag,Another Flag,Tax Appeal 2020,Donation,234,1/1/2022,cvvb@zxzxz.com
+,Mr,Barty,,B,,,Female,,,,bcd@gmail.com,Smith,,Sydney,NSW,12312,Australia,Home,10/12/21,Celebrity,Something else,SecondFlag,Another Flag,Tax Appeal 2020,Donation,235,2/1/2022,
+,Mr,Barty,,C,,,Male,,,,cdf@gmail.com,Pierce,,Sydney,NSW,qweqasd,Australia,Home,10/12/21,Celebrity,Something else,SecondFlag,Another Flag,Tax Appeal 2020,Donation,236,3/1/2022,

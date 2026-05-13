@@ -1,0 +1,6 @@
+ID(ID or first name or email required),Prefix,First Name(ID or first name or email required),Middle Name,Last Name,Suffix,Birthday,Gender,Home Phone,Mobile Phone,Work Phone,Email(ID or first name or email required),Address Line 1,Address Line2,City,State,Postcode,Country(Required if phone present),Acquisition Date,Membership Type,Membership Period(Required if membership present),Membership Amount(Required if membership present),Start Date(Required if membership present),Expiry Date,Notes,Flags,Flag Name,Flag Type,Flag Name,Flag Type
+,Mr,Square,,Pants,,,Male,,420984222,,ab123@gmail.com,32 Northam Drive,North Rocks,Sydney,NSW,2151,Australia,20/12/21,FULL,ANNUAL,1.1,21/12/2021,20/11/2023,Note1,"first,second,third",Celebrity,Black,Common Folks,Green
+123456789,Mrs,Cinderella,,Blogs,,10/1/76,Female,,420984333,,bc123@gmail.com,,,,,,Australia,20/12/21,CONCESSION,LIFE,1.2,21/12/2021,20/11/2023,Note2,,Celebrity,Black,Common Folks,Green
+,Mr,Spider,,Man,,,Male,,420984444,,cd123@gmail.com,321 Kent St,,Sydney,NSW,2000,Australia,20/12/21,FULL,LIFE,3.3,21/12/2021,,Note3,,Celebrity,,Common Folks,Green
+,Mr,Bat,,Man,,,,,420985555,,ef123@gmail.com,,,,,,Australia,20/12/21,,,,,,,,,,,
+,,Superman,,,,,,,,,,,,,,,,20/12/21,,,,,,,,,,,
