@@ -23,20 +23,30 @@ cd projects/action-network-export
 npm install
 ```
 
+Add your API key to `.claude/settings.local.json` (this file is gitignored):
+
+```json
+{
+  "env": {
+    "ACTION_NETWORK_API_KEY": "your-key-here"
+  }
+}
+```
+
 ## Usage
 
 ### Export everything at once
 
 ```bash
-ACTION_NETWORK_API_KEY=your-key-here node run-export.js
+node run-export.js
 ```
 
 ### Export individual datasets
 
 ```bash
-ACTION_NETWORK_API_KEY=your-key-here node export-people.js
-ACTION_NETWORK_API_KEY=your-key-here node export-donations.js
-ACTION_NETWORK_API_KEY=your-key-here node export-tags.js
+node export-people.js
+node export-donations.js
+node export-tags.js
 ```
 
 ### Output

@@ -15,12 +15,19 @@ const REQUEST_DELAY_MS = 300; // polite rate-limiting between pages
 const REQUEST_TIMEOUT_MS = 30_000;
 
 export function getApiKey() {
-  const key = process.env.ACTION_NETWORK_API_KEY;
-  if (!key) {
-    console.error("ERROR: Set ACTION_NETWORK_API_KEY environment variable before running.");
-    process.exit(1);
+  // Prefer env var (set by Claude Code from .claude/settings.local.json), then fall back to reading the file directly.
+  if (process.env.ACTION_NETWORK_API_KEY) return process.env.ACTION_NETWORK_API_KEY;
+
+  try {
+    const raw = fs.readFileSync(new URL("../.claude/settings.local.json", import.meta.url), "utf-8");
+    const key = JSON.parse(raw)?.env?.ACTION_NETWORK_API_KEY;
+    if (key) return key;
+  } catch {
+    // file missing or unreadable — fall through to error
   }
-  return key;
+
+  console.error("ERROR: ACTION_NETWORK_API_KEY not found. Add it to .claude/settings.local.json under env.");
+  process.exit(1);
 }
 
 // ---------------------------------------------------------------------------

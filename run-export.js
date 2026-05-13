@@ -3,7 +3,9 @@
  * Run all Action Network exports in sequence.
  *
  * Usage:
- *   ACTION_NETWORK_API_KEY=xxx node run-export.js
+ *   node run-export.js
+ *
+ * The API key is read from .claude/settings.local.json (env.ACTION_NETWORK_API_KEY).
  *
  * Outputs dated CSV files into ./output/<YYYY-MM-DD>/
  */
