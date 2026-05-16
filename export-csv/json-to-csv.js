@@ -160,7 +160,14 @@ async function main() {
     filterConfig = JSON.parse(fs.readFileSync(filterFile, "utf-8"));
   }
 
-  const filtered = applyFilter(activists, filterConfig);
+  const subscribed = activists.filter((p) => {
+    const emails = p.email_addresses || [];
+    const primary = emails.find((e) => e.primary) || emails[0];
+    return primary?.status !== "unsubscribed";
+  });
+  const unsubscribedCount = activists.length - subscribed.length;
+
+  const filtered = applyFilter(subscribed, filterConfig);
 
   const datePrefix = extractDatePrefix(inputFile);
   const notesValue = buildNotesValue(datePrefix);
@@ -179,6 +186,7 @@ async function main() {
   const missingAddress = rows.filter((r) => !r["Address Line 1"]).length;
 
   console.log(`\n   Input records:   ${activists.length}`);
+  if (unsubscribedCount) console.log(`   Unsubscribed:    ${unsubscribedCount} (excluded)`);
   if (filterConfig) console.log(`   After filtering: ${filtered.length}`);
   console.log(`   Rows written:    ${rows.length}`);
   if (missingPhone)   console.log(`   ⚠ Missing phone:   ${missingPhone}`);
