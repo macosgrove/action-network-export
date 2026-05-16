@@ -18,12 +18,18 @@ export function getApiKey() {
   // Prefer env var (set by Claude Code from .claude/settings.local.json), then fall back to reading the file directly.
   if (process.env.ACTION_NETWORK_API_KEY) return process.env.ACTION_NETWORK_API_KEY;
 
-  try {
-    const raw = fs.readFileSync(new URL("../.claude/settings.local.json", import.meta.url), "utf-8");
-    const key = JSON.parse(raw)?.env?.ACTION_NETWORK_API_KEY;
-    if (key) return key;
-  } catch {
-    // file missing or unreadable — fall through to error
+  const candidates = [
+    new URL("../.claude/settings.local.json", import.meta.url),
+    new URL(`file://${process.env.HOME}/.claude/settings.local.json`),
+  ];
+
+  for (const candidate of candidates) {
+    try {
+      const key = JSON.parse(fs.readFileSync(candidate, "utf-8"))?.env?.ACTION_NETWORK_API_KEY;
+      if (key) return key;
+    } catch {
+      // file missing or unreadable — try next
+    }
   }
 
   console.error("ERROR: ACTION_NETWORK_API_KEY not found. Add it to .claude/settings.local.json under env.");
@@ -94,24 +100,30 @@ export function extractId(href) {
  */
 export async function* paginate(version, endpoint, collectionKey, extraParams = {}) {
   let page = 1;
-  let totalPages = 1;
+  let totalPages = null; // null until we get the first response
 
-  while (page <= totalPages) {
+  while (true) {
     const data = await apiGet(version, endpoint, { ...extraParams, page, per_page: 25 });
 
-    totalPages = data.total_pages || 1;
-    const items = data._embedded?.[collectionKey] || [];
+    // total_pages may be absent on some endpoints — fall back to next-link detection
+    if (data.total_pages) totalPages = data.total_pages;
 
+    const items = data._embedded?.[collectionKey] || [];
     for (const item of items) {
       yield item;
     }
 
-    if (page % 10 === 0 || page === totalPages) {
-      process.stdout.write(`  … page ${page}/${totalPages}\n`);
+    const hasNext = !!data._links?.next?.href;
+    const knownMore = totalPages !== null && page < totalPages;
+
+    if (page % 10 === 0 || (!hasNext && !knownMore)) {
+      const pageLabel = totalPages ? `${page}/${totalPages}` : `${page}`;
+      process.stdout.write(`  … page ${pageLabel}\n`);
     }
 
+    if (!hasNext && !knownMore) break;
     page++;
-    if (page <= totalPages) await sleep(REQUEST_DELAY_MS);
+    await sleep(REQUEST_DELAY_MS);
   }
 }
 
