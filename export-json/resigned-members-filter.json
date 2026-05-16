@@ -1,0 +1,9 @@
+{
+  "require_tags": [
+    { "name": "member" },
+    { "name": "resigned", "created_after": "2025-05-16" }
+  ],
+  "exclude_tags": [
+    { "name": "deceased" }
+  ]
+}

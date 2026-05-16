@@ -1,0 +1,8 @@
+{
+  "require_tags": [
+    { "name": "subscriber" }
+  ],
+  "exclude_tags": [
+    { "name": "member" }
+  ]
+}

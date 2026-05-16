@@ -1,0 +1,66 @@
+{
+  "_comment": "Mapping from Action Network JSON export fields to SimplifiedInitialImport CSV columns.",
+  "fields": [
+    {
+      "csv_column": "First Name",
+      "json_path": "given_name",
+      "transform": null
+    },
+    {
+      "csv_column": "Last Name",
+      "json_path": "family_name",
+      "transform": null
+    },
+    {
+      "csv_column": "Mobile Phone",
+      "json_path": "phone_numbers[primary=true].number",
+      "transform": null,
+      "note": "Phone numbers do not appear to be returned by the Action Network API — the number field is absent from exported records even when a phone is present. May need to be sourced elsewhere."
+    },
+    {
+      "csv_column": "Email",
+      "json_path": "email_addresses[primary=true].address",
+      "transform": null
+    },
+    {
+      "csv_column": "Address Line 1",
+      "json_path": "postal_addresses[0].address_lines[0]",
+      "transform": null
+    },
+    {
+      "csv_column": "City",
+      "json_path": "postal_addresses[0].locality",
+      "transform": null
+    },
+    {
+      "csv_column": "State",
+      "json_path": "postal_addresses[0].region",
+      "transform": null,
+      "fallback": "custom_fields[\"State (AU)\"]",
+      "note": "postal_addresses[0].region is often empty. Fall back to custom_fields[\"State (AU)\"] when it is."
+    },
+    {
+      "csv_column": "Postcode",
+      "json_path": "postal_addresses[0].postal_code",
+      "transform": null
+    },
+    {
+      "csv_column": "Country",
+      "json_path": "postal_addresses[0].country",
+      "transform": "country_code_to_name",
+      "transform_detail": "JSON uses ISO 3166-1 alpha-2 codes (e.g. \"AU\"). CSV uses full names (e.g. \"Australia\"). Apply lookup or hardcode AU → Australia for this dataset."
+    },
+    {
+      "csv_column": "Acquisition Date",
+      "json_path": "created_date",
+      "transform": "iso8601_to_dd_mm_yy",
+      "transform_detail": "JSON format: \"2026-04-25T06:54:15Z\". CSV format: \"25/04/26\" (DD/MM/YY)."
+    },
+    {
+      "csv_column": "Notes",
+      "json_path": null,
+      "transform": null,
+      "note": "Notes are not exposed by the Action Network API. Must be exported manually from the Action Network admin UI, or set to a static value (e.g. \"Exported from AN DD-MM-YYYY\") as seen in the sample CSV."
+    }
+  ]
+}

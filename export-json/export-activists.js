@@ -20,7 +20,7 @@
  */
 import fs from "fs";
 import path from "path";
-import { paginate, apiGet, getOutputDir } from "../lib.js";
+import { paginate, apiGet, extractId, getOutputDir } from "../lib.js";
 
 // ---------------------------------------------------------------------------
 // Args
@@ -49,6 +49,36 @@ function parseArgs() {
   }
 
   return { fromIso, email };
+}
+
+// ---------------------------------------------------------------------------
+// Tags
+// ---------------------------------------------------------------------------
+
+async function fetchTagMap() {
+  const map = {};
+  for await (const tag of paginate("v2", "tags", "osdi:tags")) {
+    const id = extractId(tag._links?.self?.href);
+    if (id) map[id] = tag.name || id;
+  }
+  return map;
+}
+
+async function fetchTaggingsForPerson(personId, tagMap) {
+  const taggings = [];
+  try {
+    for await (const tagging of paginate("v2", `people/${personId}/taggings`, "osdi:taggings")) {
+      const tagId = extractId(tagging._links?.["osdi:tag"]?.href);
+      taggings.push({
+        tag_id: tagId,
+        tag_name: tagMap[tagId] || tagId,
+        created_date: tagging.created_date || "",
+      });
+    }
+  } catch (err) {
+    console.log(`  ⚠ Could not fetch taggings for person ${personId}: ${err.message}`);
+  }
+  return taggings;
 }
 
 // ---------------------------------------------------------------------------
@@ -128,6 +158,15 @@ async function main() {
   } else {
     people = await exportActivists(fromIso);
     prefix = fromIso ? fromIso.replace(/[:.]/g, "-") + "_" : "";
+  }
+
+  console.log(`\n🏷️  Fetching tag definitions …`);
+  const tagMap = await fetchTagMap();
+  console.log(`  Found ${Object.keys(tagMap).length} tags. Fetching taggings per activist …`);
+
+  for (const person of people) {
+    const personId = extractId(person._links?.self?.href);
+    person.taggings = personId ? await fetchTaggingsForPerson(personId, tagMap) : [];
   }
 
   const dir = getOutputDir();

@@ -1,0 +1,4 @@
+Supporter ID,Email(Required if no ID),Transaction description,Transaction category,Transaction amount,Transaction date,Project,Payment method
+1001,,XXL Tshirt,merch_sale,123.45,2022-01-01,,Cash
+1002,,DVDs,merch_sale,20,2022-06-06,DVD Promo,Other/unknown
+1003,,Hoodie,merch_sale,50,2022-03-12,,Credit card
