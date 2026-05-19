@@ -88,6 +88,20 @@ function formatCountry(code) {
   return COUNTRY_NAMES[code.toUpperCase()] || code;
 }
 
+function formatDateAEST(isoString) {
+  if (!isoString) return "";
+  const utcMs = new Date(isoString).getTime();
+  if (isNaN(utcMs)) return isoString;
+  const aestMs = utcMs + 10 * 60 * 60 * 1000;
+  const d = new Date(aestMs);
+  const dd = String(d.getUTCDate()).padStart(2, "0");
+  const mm = String(d.getUTCMonth() + 1).padStart(2, "0");
+  const yyyy = d.getUTCFullYear();
+  const hh = String(d.getUTCHours()).padStart(2, "0");
+  const min = String(d.getUTCMinutes()).padStart(2, "0");
+  return `${dd}-${mm}-${yyyy} ${hh}:${min}`;
+}
+
 // Extract YYYY-MM-DD prefix from a filename like "2026-04-14T00-00-00-000Z_activists.json"
 // or "mac_an_humanistsaustralia.org_activists.json" (no date — returns null)
 function extractDatePrefix(filePath) {
@@ -119,7 +133,7 @@ function personToRow(person, notesValue) {
     "State": state,
     "Postcode": addr.postal_code || "",
     "Country": formatCountry(addr.country),
-    "Acquisition Date": earliestTaggingDate(person.taggings) || person.created_date || "",
+    "Acquisition Date": formatDateAEST(earliestTaggingDate(person.taggings) || person.created_date),
     "Notes": notesValue,
   };
 }
