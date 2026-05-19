@@ -3,8 +3,10 @@
  * Convert an Action Network JSON activist export to SimplifiedInitialImport CSV format.
  *
  * Usage:
- *   node export-json/json-to-csv.js <input.json>
- *   node export-json/json-to-csv.js <input.json> --filter export-json/filter.json
+ *   node export-csv/json-to-csv.js <input.json>
+ *   node export-csv/json-to-csv.js <input.json> --filter export-csv/filter.json
+ * 
+ *   node export-csv/json-to-csv.js output/2026-05-16/activists.json --filter export-csv/subscriber-filter.json
  *
  * Output: <input-dir>/<input-basename>_simplified.csv
  *
@@ -24,7 +26,26 @@
  */
 import fs from "fs";
 import path from "path";
+import { fileURLToPath } from "url";
 import { writeCsv } from "../lib.js";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+function loadCountryCodes() {
+  const csvPath = path.join(__dirname, "2 letter country codes.csv");
+  const lines = fs.readFileSync(csvPath, "utf-8").trim().split("\n").slice(1);
+  const map = {};
+  for (const line of lines) {
+    const comma = line.indexOf(",");
+    if (comma === -1) continue;
+    const code = line.slice(0, comma).trim().toUpperCase();
+    const name = line.slice(comma + 1).trim();
+    map[code] = name;
+  }
+  return map;
+}
+
+const COUNTRY_NAMES = loadCountryCodes();
 
 // ---------------------------------------------------------------------------
 // Args
@@ -48,17 +69,18 @@ function parseArgs() {
 // Field transforms
 // ---------------------------------------------------------------------------
 
-const COUNTRY_NAMES = {
-  AU: "Australia", NZ: "New Zealand", GB: "United Kingdom", US: "United States",
-  CA: "Canada", IE: "Ireland", ZA: "South Africa", IN: "India",
-};
-
 function formatPhone(phoneNumbers) {
   const ph = phoneNumbers?.find((p) => p.primary) || phoneNumbers?.[0];
   const raw = ph?.number;
   if (!raw) return "";
   // Strip leading +61 or 61, replace with 0
   return raw.replace(/^\+?61/, "0");
+}
+
+function earliestTaggingDate(taggings) {
+  if (!taggings || taggings.length === 0) return null;
+  const dates = taggings.map((t) => t.created_date).filter(Boolean).sort();
+  return dates[0] || null;
 }
 
 function formatCountry(code) {
@@ -97,7 +119,7 @@ function personToRow(person, notesValue) {
     "State": state,
     "Postcode": addr.postal_code || "",
     "Country": formatCountry(addr.country),
-    "Acquisition Date": person.created_date || "",
+    "Acquisition Date": earliestTaggingDate(person.taggings) || person.created_date || "",
     "Notes": notesValue,
   };
 }
@@ -163,7 +185,7 @@ async function main() {
   const subscribed = activists.filter((p) => {
     const emails = p.email_addresses || [];
     const primary = emails.find((e) => e.primary) || emails[0];
-    return primary?.status !== "unsubscribed";
+    return primary?.status == "subscribed";
   });
   const unsubscribedCount = activists.length - subscribed.length;
 
@@ -176,7 +198,8 @@ async function main() {
 
   const inputDir = path.dirname(inputFile);
   const inputBase = path.basename(inputFile, ".json");
-  const outPath = path.join(inputDir, `${inputBase}_simplified.csv`);
+  const filterSuffix = filterFile ? `_${path.basename(filterFile, ".json")}` : "";
+  const outPath = path.join(inputDir, `${inputBase}${filterSuffix}_simplified.csv`);
 
   writeCsv(outPath, rows);
 
