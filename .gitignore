@@ -1,5 +1,5 @@
 settings.json
-output/*
-.claude/settings.local.json
+output
+.claude
 .DS_Store
-node_modules/
+node_modules
