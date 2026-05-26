@@ -97,9 +97,7 @@ function formatDateAEST(isoString) {
   const dd = String(d.getUTCDate()).padStart(2, "0");
   const mm = String(d.getUTCMonth() + 1).padStart(2, "0");
   const yyyy = d.getUTCFullYear();
-  const hh = String(d.getUTCHours()).padStart(2, "0");
-  const min = String(d.getUTCMinutes()).padStart(2, "0");
-  return `${dd}-${mm}-${yyyy} ${hh}:${min}`;
+  return `${dd}/${mm}/${yyyy}`;
 }
 
 // Extract YYYY-MM-DD prefix from a filename like "2026-04-14T00-00-00-000Z_activists.json"
